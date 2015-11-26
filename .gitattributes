@@ -1,0 +1,23 @@
+* text=auto
+
+# Web
+*.css text
+*.js text
+*.json text
+*.html text
+
+# git config
+.gitattributes text
+.gitignore text
+.gitconfig text
+
+# code analysis config
+.jshintrc text
+.jscsrc text
+
+# Documentation
+*.md text
+LICENSE text
+
+# Binary
+*.png binary
