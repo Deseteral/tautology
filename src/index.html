@@ -5,7 +5,13 @@
 
   <script src="page.js"></script>
 </head>
-<body>
+<body onload="loaded()">
   <h1>Tautologia</h1>
+
+  <input id="expression" type="text" name="expression">
+  <button type="button" onclick="onCalculatePress()">Oblicz</button>
+
+  <table id="outcome-table" border="1">
+  </table>
 </body>
 </html>

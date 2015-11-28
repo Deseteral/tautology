@@ -1,3 +1,8 @@
+let table;
+
+function loaded() {
+  table = document.querySelector('#outcome-table');
+}
 
 function convertToRPN(input) {
   let queue = [];
@@ -58,8 +63,19 @@ function setVariables(rpnInfo) {
     return (dec >>> 0).toString(2);
   };
 
+  let tableHtml = '<tr>';
+  for (let i = 0; i < keys.length; i++) {
+    tableHtml += `<th>${keys[i]}</th>`;
+  }
+  tableHtml += '<th>Wynik</th></tr>';
+
   for (let current = 0; current < combinations; current++) {
     let bin = dec2bin(current);
+
+    // Add leading zeros
+    while (bin.length !== keys.length) {
+      bin = '0' + bin;
+    }
 
     for (let i = 0; i < keys.length; i++) {
       vars[keys[i]] = bin[i];
@@ -72,8 +88,17 @@ function setVariables(rpnInfo) {
       }
     }
 
-    console.log(calculate(readyRpn));
+    let outcome = calculate(readyRpn);
+    console.log(outcome);
+
+    tableHtml += '<tr>';
+    for (let i = 0; i < keys.length; i++) {
+      tableHtml += `<td>${vars[keys[i]]}</td>`;
+    }
+    tableHtml += `<td>${outcome}</td></tr>`;
   }
+
+  table.innerHTML = tableHtml;
 }
 
 function calculate(rpn) {
@@ -123,4 +148,11 @@ function calculate(rpn) {
   }
 
   return parseInt(stack);
+}
+
+function onCalculatePress() {
+  let val = document.querySelector('#expression').value;
+
+  let rpnInfo = convertToRPN(val);
+  setVariables(rpnInfo);
 }
