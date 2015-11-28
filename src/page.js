@@ -1,7 +1,8 @@
 
 function convertToRPN(input) {
-  let queue = '';
+  let queue = [];
   let stack = [];
+  let vars = {};
 
   input = input.replace(/\s+/g, '');
   input = input.split(/([\&\|\=\>\(\)])/);
@@ -16,13 +17,15 @@ function convertToRPN(input) {
   for (let i = 0; i < input.length; i++) {
     let token = input[i];
 
-    if (token === '0' || token === '1') {
-      queue += token + ' ';
+    if (token.match(/[a-z]/i)) {
+      queue.push(token);
+      vars[token] = 0;
     } else if ('&|>='.indexOf(token) !== -1) {
       let o1 = token;
       let o2 = stack[stack.length - 1];
+
       while ('&|>='.indexOf(o2) !== -1) {
-        queue += stack.pop() + ' ';
+        queue.push(stack.pop());
         o2 = stack[stack.length - 1];
       }
 
@@ -31,7 +34,7 @@ function convertToRPN(input) {
       stack.push(token);
     } else if (token === ')') {
       while (stack[stack.length - 1] !== '(') {
-        queue += stack.pop() + ' ';
+        queue.push(stack.pop());
       }
 
       stack.pop();
@@ -39,18 +42,44 @@ function convertToRPN(input) {
   }
 
   while (stack.length > 0) {
-    queue += stack.pop() + ' ';
+    queue.push(stack.pop());
   }
 
-  return queue;
+  return { rpn: queue, variables: vars };
+}
+
+function setVariables(rpnInfo) {
+  const rpn = rpnInfo.rpn;
+  let vars = rpnInfo.variables;
+  let keys = Object.keys(vars);
+  let combinations = Math.pow(2, keys.length);
+
+  let dec2bin = (dec) => {
+    return (dec >>> 0).toString(2);
+  };
+
+  for (let current = 0; current < combinations; current++) {
+    let bin = dec2bin(current);
+
+    for (let i = 0; i < keys.length; i++) {
+      vars[keys[i]] = bin[i];
+    }
+
+    let readyRpn = rpn.slice();
+    for (let i = 0; i < readyRpn.length; i++) {
+      if (readyRpn[i].match(/[a-z]/i)) {
+        readyRpn[i] = vars[readyRpn[i]];
+      }
+    }
+
+    console.log(calculate(readyRpn));
+  }
 }
 
 function calculate(rpn) {
   let stack = [];
-
   while (rpn.length !== 0) {
-    let symbol = rpn[0];
-    rpn = rpn.substr(1);
+    let symbol = rpn.shift();
 
     let a;
     let b;
