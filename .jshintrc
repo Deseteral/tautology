@@ -7,5 +7,10 @@
   "unused": true,
   "browser": true,
   "node": true,
-  "plusplus": false
+  "plusplus": false,
+  "globals": {
+    "convertToRpn": true,
+    "getVariableInfo": true,
+    "calculateExpression": true
+  }
 }

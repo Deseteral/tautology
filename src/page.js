@@ -1,159 +1,63 @@
-let table;
+let $expression;
+let $table;
 
+// This function is called when DOM is loaded
 function loaded() {
-  table = document.querySelector('#outcome-table');
+  $expression = document.querySelector('#expression');
+  $table = document.querySelector('#outcome-table');
 }
 
-function convertToRPN(input) {
-  let queue = [];
-  let stack = [];
-  let vars = {};
+// This function is called when the calculate button is pressed
+// TODO: Add the same behaviour when user presses return in expression textbox
+function onCalculatePress() {
+  const val = $expression.value;
+  const rpn = convertToRpn(val);
+  const varList = getVariableInfo(rpn);
+  const combinations = Math.pow(2, varList.length);
 
-  input = input.replace(/\s+/g, '');
-  input = input.split(/([\&\|\=\>\(\)\!])/);
-
-  // Clean the array
-  for (let i = 0; i < input.length; i++) {
-    if (input[i] === '') {
-      input.splice(i, 1);
-    }
-  }
-
-  for (let i = 0; i < input.length; i++) {
-    let token = input[i];
-
-    if (token.match(/[a-z]/i)) {
-      queue.push(token);
-      vars[token] = 0;
-    } else if ('&|>=!'.indexOf(token) !== -1) {
-      let o1 = token;
-      let o2 = stack[stack.length - 1];
-
-      while ('&|>=!'.indexOf(o2) !== -1) {
-        queue.push(stack.pop());
-        o2 = stack[stack.length - 1];
-      }
-
-      stack.push(o1);
-    } else if (token === '(') {
-      stack.push(token);
-    } else if (token === ')') {
-      while (stack[stack.length - 1] !== '(') {
-        queue.push(stack.pop());
-      }
-
-      stack.pop();
-    }
-  }
-
-  while (stack.length > 0) {
-    queue.push(stack.pop());
-  }
-
-  return { rpn: queue, variables: vars };
-}
-
-function setVariables(rpnInfo) {
-  const rpn = rpnInfo.rpn;
-  let vars = rpnInfo.variables;
-  let keys = Object.keys(vars);
-  let combinations = Math.pow(2, keys.length);
-
-  let dec2bin = (dec) => {
-    return (dec >>> 0).toString(2);
-  };
-
-  let tableHtml = '<tr>';
-  for (let i = 0; i < keys.length; i++) {
-    tableHtml += `<th>${keys[i]}</th>`;
-  }
-  tableHtml += '<th>Wynik</th></tr>';
-
-  for (let current = 0; current < combinations; current++) {
-    let bin = dec2bin(current);
+  const decToBin = (dec) => {
+    let bin = (dec >>> 0).toString(2);
 
     // Add leading zeros
-    while (bin.length !== keys.length) {
+    while (bin.length !== varList.length) {
       bin = '0' + bin;
     }
 
-    for (let i = 0; i < keys.length; i++) {
-      vars[keys[i]] = bin[i];
+    return bin;
+  };
+
+  // Prepare table header
+  let tableHtml = '<tr>';
+  for (let i = 0; i < varList.length; i++) {
+    tableHtml += `<th>${varList[i]}</th>`;
+  }
+
+  tableHtml += '<th>Wynik</th></tr>';
+
+  for (let current = 0; current < combinations; current++) {
+    const bin = decToBin(current);
+    let vars = {};
+
+    // Create vars object with <varName>:<value> pairs
+    for (let i = 0; i < varList.length; i++) {
+      vars[varList[i]] = bin[i];
     }
 
-    let readyRpn = rpn.slice();
-    for (let i = 0; i < readyRpn.length; i++) {
-      if (readyRpn[i].match(/[a-z]/i)) {
-        readyRpn[i] = vars[readyRpn[i]];
-      }
-    }
+    let result = calculateExpression(rpn.slice(), vars);
 
-    let outcome = calculate(readyRpn);
-    console.log(outcome);
-
+    // Add row with calculation result
     tableHtml += '<tr>';
-    for (let i = 0; i < keys.length; i++) {
-      tableHtml += `<td>${vars[keys[i]]}</td>`;
+    for (let i = 0; i < varList.length; i++) {
+      tableHtml += `<td>${vars[varList[i]]}</td>`;
     }
-    tableHtml += `<td>${outcome}</td></tr>`;
+
+    tableHtml += `<td>${result}</td></tr>`;
+
+    console.log(vars);
+    console.log(result);
+    console.log('');
   }
 
-  table.innerHTML = tableHtml;
-}
-
-function calculate(rpn) {
-  let stack = [];
-
-  while (rpn.length !== 0) {
-    let symbol = rpn.shift();
-
-    let a;
-    let b;
-    let val;
-
-    // If symbol is a value
-    switch (symbol) {
-      case '0':
-        stack.push(0);
-        break;
-      case '1':
-        stack.push(1);
-        break;
-      case '&':
-        a = stack.pop();
-        b = stack.pop();
-        stack.push(b && a);
-        break;
-      case '|':
-        a = stack.pop();
-        b = stack.pop();
-        stack.push(b || a);
-        break;
-      case '=':
-        a = stack.pop();
-        b = stack.pop();
-        stack.push(+(b === a));
-        break;
-      case '>':
-        a = stack.pop();
-        b = +(!(stack.pop()));
-        stack.push(+(b || a));
-        break;
-      case '!':
-        a = stack.pop();
-        stack.push(+(!a));
-        break;
-      default:
-        break;
-    }
-  }
-
-  return parseInt(stack);
-}
-
-function onCalculatePress() {
-  let val = document.querySelector('#expression').value;
-
-  let rpnInfo = convertToRPN(val);
-  setVariables(rpnInfo);
+  // Show the table
+  $table.innerHTML = tableHtml;
 }
