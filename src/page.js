@@ -1,12 +1,14 @@
-let $expression;
+﻿let $expression;
 let $table;
 let $graph;
+let $isTautology;
 
 // This function is called when DOM is loaded
 function loaded() {
   $expression = document.querySelector('#expression');
   $table = document.querySelector('#outcome-table');
   $graph = document.querySelector('#graph');
+  $isTautology = document.querySelector('#is-tautology');
 }
 
 // This function is called when the calculate button is pressed
@@ -36,6 +38,9 @@ function onCalculatePress() {
 
   tableHtml += '<th>Wynik</th></tr>';
 
+  let firstResult = -1;
+  let isTautology = true;
+
   for (let current = 0; current < combinations; current++) {
     const bin = decToBin(current);
     let vars = {};
@@ -47,6 +52,13 @@ function onCalculatePress() {
 
     let result = calculateExpression(rpn.slice(), vars);
 
+    // Save first result
+    if (firstResult === -1) {
+      firstResult = result;
+    } else if (result !== firstResult) {
+      isTautology = false;
+    }
+
     // Add row with calculation result
     tableHtml += '<tr>';
     for (let i = 0; i < varList.length; i++) {
@@ -54,14 +66,16 @@ function onCalculatePress() {
     }
 
     tableHtml += `<td>${result}</td></tr>`;
-
-    console.log(vars);
-    console.log(result);
-    console.log('');
   }
 
   // Show the table
   $table.innerHTML = tableHtml;
+
+  if (isTautology) {
+    $isTautology.innerHTML = 'Zdanie jest tautologia';
+  } else {
+    $isTautology.innerHTML = 'Zdanie nie jest tautologia';
+  }
 
   // Render the graph
   renderGraph(rpn);
