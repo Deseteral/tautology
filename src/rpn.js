@@ -130,7 +130,16 @@ function createGraph(rpn) {
   let nodes = [];
 
   for (let i = 0; i < rpn.length; i++) {
-    nodes.push({ id: i, label: rpn[i], level: 0 });
+
+    let col;
+
+    if (rpn[i].match(/[a-z]/i)) {
+      col = '#AED581';
+    } else {
+      col = '#7CB342';
+    }
+
+    nodes.push({ id: i, label: rpn[i], level: 0, color: col });
   }
 
   // Create connections between nodes

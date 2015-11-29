@@ -2,6 +2,7 @@
 let $table;
 let $graph;
 let $isTautology;
+let $isNotTautology;
 
 // This function is called when DOM is loaded
 function loaded() {
@@ -9,6 +10,15 @@ function loaded() {
   $table = document.querySelector('#outcome-table');
   $graph = document.querySelector('#graph');
   $isTautology = document.querySelector('#is-tautology');
+  $isNotTautology = document.querySelector('#is-not-tautology');
+}
+
+function onEnterPress(e) {
+  if (e.keyCode === 13) {
+    onCalculatePress();
+  }
+
+  return false;
 }
 
 // This function is called when the calculate button is pressed
@@ -65,16 +75,18 @@ function onCalculatePress() {
       tableHtml += `<td>${vars[varList[i]]}</td>`;
     }
 
-    tableHtml += `<td>${result}</td></tr>`;
+    tableHtml += `<td class="result">${result}</td></tr>`;
   }
 
   // Show the table
   $table.innerHTML = tableHtml;
 
   if (isTautology) {
-    $isTautology.innerHTML = 'Zdanie jest tautologia';
+    $isTautology.style.display = 'block';
+    $isNotTautology.style.display = 'none';
   } else {
-    $isTautology.innerHTML = 'Zdanie nie jest tautologia';
+    $isTautology.style.display = 'none';
+    $isNotTautology.style.display = 'block';
   }
 
   // Render the graph
@@ -86,9 +98,9 @@ function renderGraph(rpn) {
   let options = {
     interaction: {
       dragNodes: false,
-      dragView: false,
+      dragView: true,
       selectable: false,
-      zoomView: false
+      zoomView: true
     },
     layout: {
       hierarchical: {
