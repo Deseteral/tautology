@@ -48,7 +48,6 @@ function onCalculatePress() {
 
   tableHtml += '<th>Wynik</th></tr>';
 
-  let firstResult = -1;
   let isTautology = true;
 
   for (let current = 0; current < combinations; current++) {
@@ -62,10 +61,7 @@ function onCalculatePress() {
 
     let result = calculateExpression(rpn.slice(), vars);
 
-    // Save first result
-    if (firstResult === -1) {
-      firstResult = result;
-    } else if (result !== firstResult) {
+    if (result === 0) {
       isTautology = false;
     }
 
