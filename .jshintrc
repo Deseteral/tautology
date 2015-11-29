@@ -11,6 +11,8 @@
   "globals": {
     "convertToRpn": true,
     "getVariableInfo": true,
-    "calculateExpression": true
+    "calculateExpression": true,
+    "createGraph": true,
+    "vis": true
   }
 }

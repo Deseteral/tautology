@@ -123,3 +123,67 @@ function getVariableInfo(rpn) {
 
   return vars;
 }
+
+function createGraph(rpn) {
+
+  // Create nodes
+  let nodes = [];
+
+  for (let i = 0; i < rpn.length; i++) {
+    nodes.push({ id: i, label: rpn[i], level: 0 });
+  }
+
+  // Create connections between nodes
+  let edges = [];
+  let connectTo = rpn.length - 1;
+  let connectionsNo = [];
+  let level = 1;
+
+  for (let i = 0; i < rpn.length; i++) {
+    connectionsNo.push(0);
+  }
+
+  for (let i = rpn.length - 2; i >= 0; i--) {
+    // Operator
+    if (rpn[i].match(/([\&\|\=\>\!])/i)) {
+      edges.push({ from: connectTo, to: i });
+      connectionsNo[connectTo]++;
+      connectTo = i;
+      nodes[i].level = level;
+      level++;
+    }
+
+    // Variable
+    if (rpn[i].match(/[a-z]/i)) {
+      edges.push({ from: connectTo, to: i });
+      connectionsNo[connectTo]++;
+      nodes[i].level = level;
+
+      if (connectionsNo[connectTo] === 2 ||
+        (nodes[connectTo].label === '!' && connectionsNo[connectTo] === 1)) {
+
+        for (let j = 0; j < edges.length; j++) {
+          if (edges[j].to === connectTo) {
+            connectTo = edges[j].from;
+            level--;
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  // Reverse the edges
+  edges.reverse();
+
+  // Create data sets
+  let nodeDataSet = new vis.DataSet(nodes);
+  let edgesDataSet = new vis.DataSet(edges);
+
+  let data = {
+    nodes: nodeDataSet,
+    edges: edgesDataSet
+  };
+
+  return data;
+}

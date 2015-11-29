@@ -3,14 +3,27 @@
 <head>
   <title>Tautologia</title>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.10.0/vis.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.10.0/vis.min.css" charset="utf-8">
+
   <script src="page.js"></script>
   <script src="rpn.js"></script>
+
+  <style type="text/css">
+    #graph {
+      width: 600px;
+      height: 400px;
+      border: 1px solid lightgray;
+    }
+  </style>
 </head>
 <body onload="loaded()">
   <h1>Tautologia</h1>
 
   <input id="expression" type="text" name="expression">
   <button type="button" onclick="onCalculatePress()">Oblicz</button>
+
+  <div id="graph"></div>
 
   <table id="outcome-table" border="1">
   </table>

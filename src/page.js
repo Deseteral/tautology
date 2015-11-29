@@ -1,10 +1,12 @@
 let $expression;
 let $table;
+let $graph;
 
 // This function is called when DOM is loaded
 function loaded() {
   $expression = document.querySelector('#expression');
   $table = document.querySelector('#outcome-table');
+  $graph = document.querySelector('#graph');
 }
 
 // This function is called when the calculate button is pressed
@@ -60,4 +62,26 @@ function onCalculatePress() {
 
   // Show the table
   $table.innerHTML = tableHtml;
+
+  // Render the graph
+  renderGraph(rpn);
+}
+
+function renderGraph(rpn) {
+  let data = createGraph(rpn);
+  let options = {
+    interaction: {
+      dragNodes: false,
+      dragView: false,
+      selectable: false,
+      zoomView: false
+    },
+    layout: {
+      hierarchical: {
+        direction: 'UD'
+      }
+    }
+  };
+
+  let network = new vis.Network($graph, data, options);
 }
