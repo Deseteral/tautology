@@ -159,7 +159,7 @@ function createGraph(rpn) {
 
   for (let i = rpn.length - 2; i >= 0; i--) {
     // Operator
-    if (rpn[i].match(/([\&\|\=\>\!])/i)) {
+    if (rpn[i].match(/([\&\|\=\>\<\!])/i)) {
       edges.push({ from: connectTo, to: i });
       connectionsNo[connectTo]++;
       connectTo = i;
