@@ -41,7 +41,7 @@ function onCalculatePress() {
   };
 
   // Prepare table header
-  let tableHtml = '<tr>';
+  let tableHtml = '<tr class="title">';
   for (let i = 0; i < varList.length; i++) {
     tableHtml += `<th>${varList[i]}</th>`;
   }
@@ -66,7 +66,12 @@ function onCalculatePress() {
     }
 
     // Add row with calculation result
-    tableHtml += '<tr>';
+    if (result === 1) {
+      tableHtml += '<tr class="true">';
+    } else {
+      tableHtml += '<tr>';
+    }
+
     for (let i = 0; i < varList.length; i++) {
       tableHtml += `<td>${vars[varList[i]]}</td>`;
     }

@@ -6,7 +6,7 @@ function convertToRpn(input) {
   let stack = [];
 
   input = input.replace(/\s+/g, '');
-  input = input.split(/([\&\|\=\>\(\)\!])/);
+  input = input.split(/([\&\|\=\>\<\(\)\!])/);
 
   // Clean the array
   for (let i = 0; i < input.length; i++) {
@@ -20,11 +20,11 @@ function convertToRpn(input) {
 
     if (token.match(/[a-z]/i)) {
       queue.push(token);
-    } else if ('&|>=!'.indexOf(token) !== -1) {
+    } else if ('&|><=!'.indexOf(token) !== -1) {
       let o1 = token;
       let o2 = stack[stack.length - 1];
 
-      while ('&|>=!'.indexOf(o2) !== -1) {
+      while ('&|><=!'.indexOf(o2) !== -1) {
         queue.push(stack.pop());
         o2 = stack[stack.length - 1];
       }
@@ -93,6 +93,11 @@ function calculateExpression(rpn, vars) {
       case '>':
         a = stack.pop();
         b = +(!(stack.pop()));
+        stack.push(+(b || a));
+        break;
+      case '<':
+        a = +(!(stack.pop()));
+        b = stack.pop();
         stack.push(+(b || a));
         break;
       case '!':
