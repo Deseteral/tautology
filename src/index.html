@@ -3,6 +3,8 @@
 <head>
   <title>Tautologia</title>
 
+  <meta charset="utf-8" />
+
   <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono" rel="stylesheet" type="text/css">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.10.0/vis.min.js"></script>
@@ -138,7 +140,7 @@
 </head>
 <body onload="loaded()">
   <div class="toolbar">
-    <div>Rachunek zdan</div>
+    <div>Rachunek zdań</div>
   </div>
 
   <div class="container">
@@ -146,22 +148,22 @@
       id="expression"
       type="text"
       name="expression"
-      placeholder="Formula np. 'p&amp;q'"
+      placeholder="Formuła np. 'p&amp;q'"
       onkeypress="onEnterPress(event)">
 
     <div id="tutorial">
       <div>&amp; - koniunkcja</div>
       <div>| - alternatywa</div>
       <div>&gt; - implikacja</div>
-      <div>&lt; - implikacja w druga strone</div>
-      <div>= - rownowaznosc</div>
+      <div>&lt; - implikacja w drugą stronę</div>
+      <div>= - równoważność</div>
       <div>! - negacja</div>
     </div>
 
     <div id="graph"></div>
 
-    <div id="is-tautology">Zdanie jest tautologia</div>
-    <div id="is-not-tautology">Zdanie nie jest tautologia</div>
+    <div id="is-tautology">Zdanie jest tautologią</div>
+    <div id="is-not-tautology">Zdanie nie jest tautologią</div>
 
     <table id="outcome-table" border="1"></table>
   </div>
