@@ -52,64 +52,57 @@ function convertToRpn(input) {
 // Returns 0 or 1, the result of calculations
 function calculateExpression(rpn, vars) {
   let stack = [];
+  let symbol;
 
-  // Replace variables with acutal values
-  for (let i = 0; i < rpn.length; i++) {
-    if (rpn[i].match(/[a-z]/i)) {
-      rpn[i] = vars[rpn[i]];
-    }
-  }
+  let a;
+  let b;
 
   // Calculate
-  while (rpn.length !== 0) {
-    let symbol = rpn.shift();
+  for (let i = 0; i < rpn.length; i++) {
+    symbol = rpn[i];
 
-    let a;
-    let b;
-
-    // If symbol is a value
-    switch (symbol) {
-      case '0':
-        stack.push(0);
-        break;
-      case '1':
-        stack.push(1);
-        break;
-      case '&':
-        a = stack.pop();
-        b = stack.pop();
-        stack.push(b && a);
-        break;
-      case '|':
-        a = stack.pop();
-        b = stack.pop();
-        stack.push(b || a);
-        break;
-      case '=':
-        a = stack.pop();
-        b = stack.pop();
-        stack.push(+(b === a));
-        break;
-      case '>':
-        a = stack.pop();
-        b = +(!(stack.pop()));
-        stack.push(+(b || a));
-        break;
-      case '<':
-        a = +(!(stack.pop()));
-        b = stack.pop();
-        stack.push(+(b || a));
-        break;
-      case '!':
-        a = stack.pop();
-        stack.push(+(!a));
-        break;
-      default:
-        break;
+    // If the symbol is variable push its value on to the stack
+    // If it's a operator, do necessary operation
+    if (symbol.match(/[a-z]/i)) {
+      stack.push(+(vars[symbol]));
+    } else {
+      switch (symbol) {
+        case '&':
+          a = stack.pop();
+          b = stack.pop();
+          stack.push(b && a);
+          break;
+        case '|':
+          a = stack.pop();
+          b = stack.pop();
+          stack.push(b || a);
+          break;
+        case '=':
+          a = stack.pop();
+          b = stack.pop();
+          stack.push(+(b === a));
+          break;
+        case '>':
+          a = stack.pop();
+          b = +(!(stack.pop()));
+          stack.push(+(b || a));
+          break;
+        case '<':
+          a = +(!(stack.pop()));
+          b = stack.pop();
+          stack.push(+(b || a));
+          break;
+        case '!':
+          a = stack.pop();
+          stack.push(+(!a));
+          break;
+        default:
+          break;
+      }
     }
   }
 
-  return parseInt(stack);
+  return stack[0];
 }
 
 // Returns the array of variable tokens in RPN expression
@@ -173,8 +166,9 @@ function createGraph(rpn) {
       connectionsNo[connectTo]++;
       nodes[i].level = level;
 
-      if (connectionsNo[connectTo] === 2 ||
-        (nodes[connectTo].label === '!' && connectionsNo[connectTo] === 1)) {
+      while (connectTo !== (nodes.length - 1) &&
+        (connectionsNo[connectTo] === 2 ||
+        (nodes[connectTo].label === '!' && connectionsNo[connectTo] === 1))) {
 
         for (let j = 0; j < edges.length; j++) {
           if (edges[j].to === connectTo) {

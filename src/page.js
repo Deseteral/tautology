@@ -24,10 +24,18 @@ function onEnterPress(e) {
 // This function is called when the calculate button is pressed
 // TODO: Add the same behaviour when user presses return in expression textbox
 function onCalculatePress() {
+  // Get the expression and convert it to RPN
   const val = $expression.value;
   const rpn = convertToRpn(val);
   const varList = getVariableInfo(rpn);
-  const combinations = Math.pow(2, varList.length);
+
+  const MAX_VARS_TO_RENDER_TABLE = 10;
+
+  // All possible combinations: 2 to the power of (varList.length)
+  const combinations = (1 << varList.length);
+
+  // Render the graph
+  renderGraph(rpn);
 
   const decToBin = (dec) => {
     let bin = (dec >>> 0).toString(2);
@@ -41,46 +49,62 @@ function onCalculatePress() {
   };
 
   // Prepare table header
-  let tableHtml = '<tr class="title">';
-  for (let i = 0; i < varList.length; i++) {
-    tableHtml += `<th>${varList[i]}</th>`;
+  if (varList.length < MAX_VARS_TO_RENDER_TABLE) {
+    let tableHtml = '<tr class="title">';
+    for (let i = 0; i < varList.length; i++) {
+      tableHtml += `<th>${varList[i]}</th>`;
+    }
+
+    tableHtml += '<th>Wynik</th></tr>';
+    $table.innerHTML = tableHtml;
+  } else {
+    $table.innerHTML = '';
   }
 
-  tableHtml += '<th>Wynik</th></tr>';
-
+  // Check for all possible combinations
   let isTautology = true;
+  let vars = {};
+  let bin;
+  let result;
+  let row;
+  let resultCell;
 
+  console.time('calculations');
   for (let current = 0; current < combinations; current++) {
-    const bin = decToBin(current);
-    let vars = {};
+    bin = decToBin(current);
 
     // Create vars object with <varName>:<value> pairs
     for (let i = 0; i < varList.length; i++) {
       vars[varList[i]] = bin[i];
     }
 
-    let result = calculateExpression(rpn.slice(), vars);
+    // Calculate the result
+    result = calculateExpression(rpn, vars);
 
-    if (result === 0) {
+    // Check if the expression is tautology
+    if (isTautology && result === 0) {
       isTautology = false;
     }
 
-    // Add row with calculation result
-    if (result === 1) {
-      tableHtml += '<tr class="true">';
-    } else {
-      tableHtml += '<tr>';
-    }
+    // Add result to the array
+    if (varList.length < MAX_VARS_TO_RENDER_TABLE) {
+      row = $table.insertRow();
 
-    for (let i = 0; i < varList.length; i++) {
-      tableHtml += `<td>${vars[varList[i]]}</td>`;
-    }
+      if (result === 1) {
+        row.className = 'true';
+      }
 
-    tableHtml += `<td class="result">${result}</td></tr>`;
+      for (let i = 0; i < varList.length; i++) {
+        row.insertCell().innerHTML = vars[varList[i]];
+      }
+
+      resultCell = row.insertCell();
+      resultCell.innerHTML = result;
+      resultCell.className = 'result';
+    }
   }
 
-  // Show the table
-  $table.innerHTML = tableHtml;
+  console.timeEnd('calculations');
 
   if (isTautology) {
     $isTautology.style.display = 'block';
@@ -89,9 +113,6 @@ function onCalculatePress() {
     $isTautology.style.display = 'none';
     $isNotTautology.style.display = 'block';
   }
-
-  // Render the graph
-  renderGraph(rpn);
 }
 
 function renderGraph(rpn) {
@@ -110,5 +131,5 @@ function renderGraph(rpn) {
     }
   };
 
-  let network = new vis.Network($graph, data, options);
+  new vis.Network($graph, data, options);
 }
