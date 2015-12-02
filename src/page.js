@@ -11,6 +11,12 @@ function loaded() {
   $graph = document.querySelector('#graph');
   $isTautology = document.querySelector('#is-tautology');
   $isNotTautology = document.querySelector('#is-not-tautology');
+
+  // Set last valid expression
+  $expression.focus();
+  if (localStorage.lastExpression !== undefined) {
+    $expression.value = localStorage.lastExpression;
+  }
 }
 
 function onEnterPress(e) {
@@ -26,6 +32,8 @@ function onEnterPress(e) {
 function onCalculatePress() {
   // Get the expression and convert it to RPN
   const val = $expression.value;
+  localStorage.lastExpression = $expression.value;
+
   const rpn = convertToRpn(val);
   const varList = getVariableInfo(rpn);
 
