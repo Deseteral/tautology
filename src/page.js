@@ -4,6 +4,8 @@ let $graph;
 let $isTautology;
 let $isNotTautology;
 
+const MAX_VARS_TO_RENDER_TABLE = 10;
+
 // This function is called when DOM is loaded
 function loaded() {
   $expression = document.querySelector('#expression');
@@ -34,10 +36,13 @@ function onCalculatePress() {
   const val = $expression.value;
   localStorage.lastExpression = $expression.value;
 
+  if (val === '') {
+    alert('Formuła nie może być pusta!');
+    return;
+  }
+
   const rpn = convertToRpn(val);
   const varList = getVariableInfo(rpn);
-
-  const MAX_VARS_TO_RENDER_TABLE = 10;
 
   // All possible combinations: 2 to the power of (varList.length)
   const combinations = (1 << varList.length);
