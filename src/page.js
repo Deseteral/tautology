@@ -10,9 +10,9 @@ const MAX_VARS_TO_RENDER_TABLE = 10;
 function loaded() {
   $expression = document.querySelector('#expression');
   $table = document.querySelector('#outcome-table');
-  $graph = document.querySelector('#graph');
-  $isTautology = document.querySelector('#is-tautology');
-  $isNotTautology = document.querySelector('#is-not-tautology');
+  $graph = document.querySelector('#graph-renderer');
+  $isTautology = document.querySelector('.is-tautology .is');
+  $isNotTautology = document.querySelector('.is-tautology .is-not');
 
   // Set last valid expression
   $expression.focus();
@@ -32,15 +32,24 @@ function onEnterPress(e) {
 // This function is called when the calculate button is pressed
 // TODO: Add the same behaviour when user presses return in expression textbox
 function onCalculatePress() {
-  // Get the expression and convert it to RPN
+  // Get the expression
   const val = $expression.value;
+
+  // Save current expression in local storage
+  // TODO: Only save valid expressions
   localStorage.lastExpression = $expression.value;
 
   if (val === '') {
-    alert('Formuła nie może być pusta!');
+    window.alert('Formuła nie może być pusta!');
     return;
   }
 
+  // Show all of the hidden stuff
+  document.querySelector('.is-tautology').style.display = 'block';
+  document.querySelector('.graph').style.display = 'block';
+  document.querySelector('.table').style.display = 'block';
+
+  // Convert the expression to RPN
   const rpn = convertToRpn(val);
   const varList = getVariableInfo(rpn);
 
@@ -132,10 +141,10 @@ function renderGraph(rpn) {
   let data = createGraph(rpn);
   let options = {
     interaction: {
-      dragNodes: false,
       dragView: true,
-      selectable: false,
-      zoomView: true
+      zoomView: true,
+      dragNodes: false,
+      selectable: false
     },
     layout: {
       hierarchical: {

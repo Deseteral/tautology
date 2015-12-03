@@ -4,7 +4,9 @@
   <title>Tautologia</title>
 
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono" rel="stylesheet" type="text/css">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.10.0/vis.min.js"></script>
@@ -13,134 +15,7 @@
   <script src="page.js"></script>
   <script src="rpn.js"></script>
 
-  <style type="text/css">
-    body {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-
-      margin: 0;
-      padding: 0;
-      font-family: 'Roboto', sans-serif;
-    }
-
-    .toolbar {
-      display: flex;
-
-      width: 100%;
-      height: 64px;
-      margin-bottom: 16px;
-
-      background-color: #8BC34A;
-      box-shadow: 0px 4px 5px #888888;
-
-      font-size: 34px;
-      align-items: center;
-    }
-
-    .toolbar > div {
-      opacity: 0.87;
-      margin-left: 15px;
-    }
-
-    .container {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-
-      width: 80%;
-      height: 100%;
-
-      margin-left: auto;
-      margin-right: auto;
-      margin-bottom: 16px;
-
-      padding-top: 15px;
-      padding-bottom: 15px;
-
-      border-radius: 2px;
-      box-shadow: 0px 5px 10px #888888;
-    }
-
-    #expression {
-      font-family: 'Roboto Mono', monospace;
-      font-size: 24px;
-
-      margin-left: 15px;
-      margin-right: 15px;
-    }
-
-    #tutorial {
-      font-family: 'Roboto Mono', monospace;
-      background-color: #F1F8E9;
-
-      margin-top: 15px;
-      margin-bottom: 15px;
-      padding: 10px;
-    }
-
-    #tutorial > .notice {
-      margin-top: 25px;
-    }
-
-    #graph {
-      width: 100%;
-      height: 600px;
-
-      margin-left: 15px;
-      margin-right: 15px;
-    }
-
-    #is-tautology, #is-not-tautology {
-      display: none;
-      font-size: 24px;
-      margin: 15px;
-    }
-
-    #is-tautology {
-      color: #4CAF50;
-    }
-
-    #is-not-tautology {
-      color: #F44336;
-    }
-
-    table {
-      border-collapse: collapse;
-
-      margin-left: 15px;
-      margin-right: 15px;
-
-      font-size: 18px;
-    }
-
-    table, th, td {
-      font-family: 'Roboto Mono', monospace;
-      border: 1px solid black;
-    }
-
-    th {
-      opacity: 0.87;
-      padding: 5px;
-    }
-
-    td {
-      min-width: 18px;
-      text-align: center;
-    }
-
-    td.result {
-      text-align: right;
-    }
-
-    tr.title {
-      background-color: #AED581;
-    }
-
-    tr.true {
-      background-color: #C5E1A5;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css" charset="utf-8">
 </head>
 <body onload="loaded()">
   <div class="toolbar">
@@ -148,32 +23,68 @@
   </div>
 
   <div class="container">
+    <div class="headline typo-headline">
+      Aplikacja sprawdza, czy podana formuła jest tautologią
+    </div>
+
     <input
       id="expression"
+      class="typo-code"
       type="text"
       name="expression"
       placeholder="Formuła np. 'p&amp;q'"
       onkeypress="onEnterPress(event)">
 
-    <div id="tutorial">
-      <div>&amp; - koniunkcja</div>
-      <div>| - alternatywa</div>
-      <div>&gt; - implikacja</div>
-      <div>&lt; - implikacja w drugą stronę</div>
-      <div>= - równoważność</div>
-      <div>! - negacja</div>
+    <div class="user-guide">
+      <div class="typo-code">
+        <div>&amp; - koniunkcja</div>
+        <div>| - alternatywa</div>
+        <div>&gt; - implikacja</div>
+        <div>&lt; - implikacja w drugą stronę</div>
+        <div>= - równoważność</div>
+        <div>! - negacja</div>
+      </div>
       <div class="notice">
-        Uwaga: Aby uniknąć błędów w interpretacji formuły, korzystając z negacji
-        należy umieszczać ją w nawiasach np. (!p), lub (!(p&gt;q))
+        <div>
+          Uwaga: Aby uniknąć błędów w interpretacji formuły, korzystając z
+          negacji należy umieszczać ją w nawiasach np.
+          <span class="typo-code">(!p)</span>, lub
+          <span class="typo-code">(!(p&gt;q))</span>.
+        </div>
+        <div>
+          Uwaga: Aplikacja nie sprawdza poprawności formuły.
+        </div>
+      </div>
     </div>
+
+    <div class="is-tautology typo-headline">
+      <div class="is">
+        <i class="material-icons">&#xE8DC;</i>
+        <span>Zdanie jest tautologią</span>
+      </div>
+      <div class="is-not">
+        <i class="material-icons">&#xE8DB;</i>
+        <span>Zdanie nie jest tautologią</span>
+      </div>
     </div>
 
-    <div id="graph"></div>
+    <div class="graph">
+      <div class="typo-headline">Drzewo reprezentujące formułę:</div>
+      <div id="graph-renderer" class="renderer"></div>
+    </div>
 
-    <div id="is-tautology">Zdanie jest tautologią</div>
-    <div id="is-not-tautology">Zdanie nie jest tautologią</div>
-
-    <table id="outcome-table" border="1"></table>
+    <div class="table">
+      <div class="typo-headline">Tabela wartościowań</div>
+      <div>
+        Wiersze z zielonym tłem oznaczają wartościowanie dla których formuła
+        jest prawdziwa.
+      </div>
+      <table
+        id="outcome-table"
+        class="typo-code"
+        border="1">
+      </table>
+    </div>
   </div>
 </body>
 </html>
