@@ -10,3 +10,6 @@ The frontend is written in Polish.
 
 Website is hosted on
 [my uni tilde website](http://www-users.mat.umk.pl/~mferchow/tautologia/).
+
+## License
+This project is licensed under the [MIT license](LICENSE).
