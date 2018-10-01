@@ -1,32 +1,35 @@
-﻿let $expression;
-let $table;
-let $graph;
-let $isTautology;
-let $isNotTautology;
-
 const MAX_VARS_TO_RENDER_TABLE = 10;
 
 // This function is called when DOM is loaded
-function loaded() {
-  $expression = document.querySelector('#expression');
-  $table = document.querySelector('#outcome-table');
-  $graph = document.querySelector('#graph-renderer');
-  $isTautology = document.querySelector('.is-tautology .is');
-  $isNotTautology = document.querySelector('.is-tautology .is-not');
+const $expression = document.getElementById('expression');
+const $table = document.getElementById('outcome-table');
+const $graph = document.getElementById('graph-renderer');
+const $isTautology = document.querySelector('.is-tautology .is');
+const $isNotTautology = document.querySelector('.is-tautology .is-not');
 
-  // Set last valid expression
-  $expression.focus();
-  if (localStorage.lastExpression !== undefined) {
-    $expression.value = localStorage.lastExpression;
-  }
+// Set last valid expression
+$expression.focus();
+if (localStorage.lastExpression !== undefined) {
+  $expression.value = localStorage.lastExpression;
 }
 
-function onEnterPress(e) {
-  if (e.keyCode === 13) {
-    onCalculatePress();
-  }
+function renderGraph(rpn) {
+  const data = createGraph(rpn);
+  const options = {
+    interaction: {
+      dragView: true,
+      zoomView: true,
+      dragNodes: false,
+      selectable: false,
+    },
+    layout: {
+      hierarchical: {
+        direction: 'UD',
+      },
+    },
+  };
 
-  return false;
+  new vis.Network($graph, data, options); // eslint-disable-line no-new
 }
 
 // This function is called when the calculate button is pressed
@@ -54,17 +57,17 @@ function onCalculatePress() {
   const varList = getVariableInfo(rpn);
 
   // All possible combinations: 2 to the power of (varList.length)
-  const combinations = (1 << varList.length);
+  const combinations = (2 ** varList.length);
 
   // Render the graph
   renderGraph(rpn);
 
   const decToBin = (dec) => {
-    let bin = (dec >>> 0).toString(2);
+    let bin = (dec >>> 0).toString(2); // eslint-disable-line no-bitwise
 
     // Add leading zeros
     while (bin.length !== varList.length) {
-      bin = '0' + bin;
+      bin = `0${bin}`;
     }
 
     return bin;
@@ -73,7 +76,7 @@ function onCalculatePress() {
   // Prepare table header
   if (varList.length < MAX_VARS_TO_RENDER_TABLE) {
     let tableHtml = '<tr class="title">';
-    for (let i = 0; i < varList.length; i++) {
+    for (let i = 0; i < varList.length; i += 1) {
       tableHtml += `<th>${varList[i]}</th>`;
     }
 
@@ -85,18 +88,18 @@ function onCalculatePress() {
 
   // Check for all possible combinations
   let isTautology = true;
-  let vars = {};
+  const vars = {};
   let bin;
   let result;
   let row;
   let resultCell;
 
   console.time('calculations');
-  for (let current = 0; current < combinations; current++) {
+  for (let current = 0; current < combinations; current += 1) {
     bin = decToBin(current);
 
     // Create vars object with <varName>:<value> pairs
-    for (let i = 0; i < varList.length; i++) {
+    for (let i = 0; i < varList.length; i += 1) {
       vars[varList[i]] = bin[i];
     }
 
@@ -116,7 +119,7 @@ function onCalculatePress() {
         row.className = 'true';
       }
 
-      for (let i = 0; i < varList.length; i++) {
+      for (let i = 0; i < varList.length; i += 1) {
         row.insertCell().innerHTML = vars[varList[i]];
       }
 
@@ -137,21 +140,12 @@ function onCalculatePress() {
   }
 }
 
-function renderGraph(rpn) {
-  let data = createGraph(rpn);
-  let options = {
-    interaction: {
-      dragView: true,
-      zoomView: true,
-      dragNodes: false,
-      selectable: false
-    },
-    layout: {
-      hierarchical: {
-        direction: 'UD'
-      }
-    }
-  };
+function onKeyPress(event) {
+  if (event.key === 'Enter') {
+    onCalculatePress();
+  }
 
-  new vis.Network($graph, data, options);
+  return false;
 }
+
+$expression.addEventListener('keydown', onKeyPress);

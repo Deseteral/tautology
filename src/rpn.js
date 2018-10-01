@@ -1,27 +1,27 @@
 
 // Converts infix notation to RPN
 // Returns array of RPN tokens
-function convertToRpn(input) {
-  let queue = [];
-  let stack = [];
+function convertToRpn(data) { // eslint-disable-line no-unused-vars
+  const queue = [];
+  const stack = [];
 
-  input = input.replace(/\s+/g, '');
-  input = input.split(/([\&\|\=\>\<\(\)\!])/);
+  let input = data.replace(/\s+/g, '');
+  input = input.split(/([&|=><()!])/);
 
   // Clean the array
-  for (let i = 0; i < input.length; i++) {
+  for (let i = 0; i < input.length; i += 1) {
     if (input[i] === '') {
       input.splice(i, 1);
     }
   }
 
-  for (let i = 0; i < input.length; i++) {
-    let token = input[i];
+  for (let i = 0; i < input.length; i += 1) {
+    const token = input[i];
 
     if (token.match(/[a-z]/i)) {
       queue.push(token);
     } else if ('&|><=!'.indexOf(token) !== -1) {
-      let o1 = token;
+      const o1 = token;
       let o2 = stack[stack.length - 1];
 
       while ('&|><=!'.indexOf(o2) !== -1) {
@@ -50,15 +50,15 @@ function convertToRpn(input) {
 
 // Calculates the value of the expression expressed as RPN
 // Returns 0 or 1, the result of calculations
-function calculateExpression(rpn, vars) {
-  let stack = [];
+function calculateExpression(rpn, vars) { // eslint-disable-line no-unused-vars
+  const stack = [];
   let symbol;
 
   let a;
   let b;
 
   // Calculate
-  for (let i = 0; i < rpn.length; i++) {
+  for (let i = 0; i < rpn.length; i += 1) {
     symbol = rpn[i];
 
     // If the symbol is variable push its value on to the stack
@@ -106,10 +106,10 @@ function calculateExpression(rpn, vars) {
 }
 
 // Returns the array of variable tokens in RPN expression
-function getVariableInfo(rpn) {
-  let vars = [];
+function getVariableInfo(rpn) { // eslint-disable-line no-unused-vars
+  const vars = [];
 
-  for (let i = 0; i < rpn.length; i++) {
+  for (let i = 0; i < rpn.length; i += 1) {
     // If the token is a variable (character)
     if (rpn[i].match(/[a-z]/i)) {
       // And it's not in vars array
@@ -122,13 +122,11 @@ function getVariableInfo(rpn) {
   return vars;
 }
 
-function createGraph(rpn) {
-
+function createGraph(rpn) { // eslint-disable-line no-unused-vars
   // Create nodes
-  let nodes = [];
+  const nodes = [];
 
-  for (let i = 0; i < rpn.length; i++) {
-
+  for (let i = 0; i < rpn.length; i += 1) {
     let col;
 
     if (rpn[i].match(/[a-z]/i)) {
@@ -137,43 +135,47 @@ function createGraph(rpn) {
       col = '#7CB342';
     }
 
-    nodes.push({ id: i, label: rpn[i], level: 0, color: col });
+    nodes.push({
+      id: i,
+      label: rpn[i],
+      level: 0,
+      color: col,
+    });
   }
 
   // Create connections between nodes
-  let edges = [];
+  const edges = [];
   let connectTo = rpn.length - 1;
-  let connectionsNo = [];
+  const connectionsNo = [];
   let level = 1;
 
-  for (let i = 0; i < rpn.length; i++) {
+  for (let i = 0; i < rpn.length; i += 1) {
     connectionsNo.push(0);
   }
 
-  for (let i = rpn.length - 2; i >= 0; i--) {
+  for (let i = rpn.length - 2; i >= 0; i -= 1) {
     // Operator
-    if (rpn[i].match(/([\&\|\=\>\<\!])/i)) {
+    if (rpn[i].match(/([&|=><!])/i)) {
       edges.push({ from: connectTo, to: i });
-      connectionsNo[connectTo]++;
+      connectionsNo[connectTo] += 1;
       connectTo = i;
       nodes[i].level = level;
-      level++;
+      level += 1;
     }
 
     // Variable
     if (rpn[i].match(/[a-z]/i)) {
       edges.push({ from: connectTo, to: i });
-      connectionsNo[connectTo]++;
+      connectionsNo[connectTo] += 1;
       nodes[i].level = level;
 
-      while (connectTo !== (nodes.length - 1) &&
-        (connectionsNo[connectTo] === 2 ||
-        (nodes[connectTo].label === '!' && connectionsNo[connectTo] === 1))) {
-
-        for (let j = 0; j < edges.length; j++) {
+      while (connectTo !== (nodes.length - 1)
+        && (connectionsNo[connectTo] === 2
+        || (nodes[connectTo].label === '!' && connectionsNo[connectTo] === 1))) {
+        for (let j = 0; j < edges.length; j += 1) {
           if (edges[j].to === connectTo) {
             connectTo = edges[j].from;
-            level--;
+            level -= 1;
             break;
           }
         }
@@ -185,12 +187,12 @@ function createGraph(rpn) {
   edges.reverse();
 
   // Create data sets
-  let nodeDataSet = new vis.DataSet(nodes);
-  let edgesDataSet = new vis.DataSet(edges);
+  const nodeDataSet = new vis.DataSet(nodes);
+  const edgesDataSet = new vis.DataSet(edges);
 
-  let data = {
+  const data = {
     nodes: nodeDataSet,
-    edges: edgesDataSet
+    edges: edgesDataSet,
   };
 
   return data;
