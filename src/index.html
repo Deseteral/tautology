@@ -12,8 +12,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.10.0/vis.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.10.0/vis.min.css" charset="utf-8">
 
-  <script src="page.js" defer></script>
-  <script src="rpn.js" defer></script>
+  <script src="bundle.js"></script>
 
   <link rel="stylesheet" href="styles.css" charset="utf-8">
 </head>
@@ -26,6 +25,14 @@
     <div class="headline typo-headline">
       Aplikacja sprawdza, czy podana formuła jest tautologią
     </div>
+
+    <button id="btn-en">
+        english
+      </button>
+      <button id="btn-pl">
+        polish
+      </button>
+    <div id="output"></div>
 
     <input
       id="expression"

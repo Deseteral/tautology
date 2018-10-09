@@ -1,17 +1,33 @@
+var i18next = require('i18next');
+
+var $expression, $table, $graph, $isTautology, $isNotTautology, $btnEn, $btnPl;
 const MAX_VARS_TO_RENDER_TABLE = 10;
 
-// This function is called when DOM is loaded
-const $expression = document.getElementById('expression');
-const $table = document.getElementById('outcome-table');
-const $graph = document.getElementById('graph-renderer');
-const $isTautology = document.querySelector('.is-tautology .is');
-const $isNotTautology = document.querySelector('.is-tautology .is-not');
-
-// Set last valid expression
-$expression.focus();
-if (localStorage.lastExpression !== undefined) {
-  $expression.value = localStorage.lastExpression;
+// Setup internationalization support
+i18next.init({
+  lng: 'en',
+  debug: true,
+  resources: {
+    en: {
+      translation: {
+        "headline": "Application determines whether the given formula is a tautology"
+      }
+    },
+    pl: {
+      translation: {
+        "headline": "Aplikacja sprawdza, czy podana formuła jest tautologią"
+      }
+    }
+  }, function(err, t) {
+    updateContent();
+  }
+});
+function updateContent() {
+  document.getElementById('output').innerHTML = i18next.t('headline');
 }
+i18next.on('languageChanged', () => {
+  updateContent();
+});
 
 function renderGraph(rpn) {
   const data = createGraph(rpn);
@@ -148,4 +164,28 @@ function onKeyPress(event) {
   return false;
 }
 
-$expression.addEventListener('keydown', onKeyPress);
+// This function is called when DOM is loaded
+window.onload = function() {
+  $btnEn = document.getElementById('btn-en');
+  $btnPl = document.getElementById('btn-pl');
+  $expression = document.getElementById('expression');
+  $table = document.getElementById('outcome-table');
+  $graph = document.getElementById('graph-renderer');
+  $isTautology = document.querySelector('.is-tautology .is');
+  $isNotTautology = document.querySelector('.is-tautology .is-not');
+
+  // Change language
+  $btnEn.addEventListener('click', function() {
+    i18next.changeLanguage('en')
+  });
+  $btnPl.addEventListener('click', function() {
+    i18next.changeLanguage('pl')
+  });
+
+  // Set last valid expression
+  $expression.focus();
+  if (localStorage.lastExpression !== undefined) {
+    $expression.value = localStorage.lastExpression;
+  }
+  $expression.addEventListener('keydown', onKeyPress);
+}
