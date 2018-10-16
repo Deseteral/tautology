@@ -1,0 +1,25 @@
+{
+  "translation": { 
+    "title": "Tautology",
+    "toolbarTitle": "Propositional calculus",
+    "headline": "Application determines whether the given formula is a tautology",
+    "placeholder": "Formula e.g. 'p&q'",
+    "guide": {
+      "conj": "conjunction",
+      "disj": "disjunction",
+      "imp": "implication",
+      "imp-left": "left-side implication",
+      "equ": "equivalence",
+      "neg": "negation"
+    },
+    "notice1": "Note: To avoid errors in the interpretation of the formula, negation should be placed in parentheses e.g. (!p) or (!(p>q)).",
+    "or": "or",
+    "notice2": "Note: The application does not check the correctness of the formula.",
+    "isTautology": "This is a tautology",
+    "isNotTautology": "This is not a tautology",
+    "graph": "Graph representing the formula:",
+    "table": "Evaluation table",
+    "table-info": "Green rows indicate valuations for which the formula is true.",
+    "result": "Result"
+  }
+}
