@@ -1,33 +1,14 @@
-var i18next = require('i18next');
+import {
+  convertToRpn,
+  getVariableInfo,
+  createGraph,
+  calculateExpression
+} from './rpn.js';
+import i18next from 'i18next';
+import * as resources from '../i18next';
 
-var $expression, $table, $graph, $isTautology, $isNotTautology, $btnEn, $btnPl;
+var $expression, $table, $graph, $isTautology, $isNotTautology, $btnEn, $btnPl
 const MAX_VARS_TO_RENDER_TABLE = 10;
-
-// Setup internationalization support
-i18next.init({
-  lng: 'en',
-  debug: true,
-  resources: {
-    en: {
-      translation: {
-        "headline": "Application determines whether the given formula is a tautology"
-      }
-    },
-    pl: {
-      translation: {
-        "headline": "Aplikacja sprawdza, czy podana formuła jest tautologią"
-      }
-    }
-  }, function(err, t) {
-    updateContent();
-  }
-});
-function updateContent() {
-  document.getElementById('output').innerHTML = i18next.t('headline');
-}
-i18next.on('languageChanged', () => {
-  updateContent();
-});
 
 function renderGraph(rpn) {
   const data = createGraph(rpn);
@@ -173,6 +154,24 @@ window.onload = function() {
   $graph = document.getElementById('graph-renderer');
   $isTautology = document.querySelector('.is-tautology .is');
   $isNotTautology = document.querySelector('.is-tautology .is-not');
+
+  // Setup internationalization support
+  i18next.init({
+    lng: 'en',
+    debug: true,
+    resources,
+    }, (err, t) => {
+      if (err) return ('Error while loading', err);
+      updateContent();
+    });
+
+  function updateContent() {
+    document.getElementById('toolbar-title').innerHTML = i18next.t('title');
+  }
+
+  i18next.on('languageChanged', () => {
+    updateContent();
+  });
 
   // Change language
   $btnEn.addEventListener('click', function() {
