@@ -20,12 +20,27 @@ body {
 
   font-size: 34px;
   align-items: center;
+  justify-content: space-between;
 }
 
 /* Toolbar title */
 .toolbar > div {
   opacity: 0.87;
   margin-left: 15px;
+}
+
+.lang-buttons {
+  margin-right: 15px;
+}
+
+button {
+  background: #FFFFFF;
+  border: none;
+  box-shadow: 0 5px 10px #888888;
+  cursor: pointer;
+  font-size: 15px;
+  margin: 5px;
+  padding: 5px;
 }
 
 /* Main container (card) */
