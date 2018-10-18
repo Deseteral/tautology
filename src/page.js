@@ -5,9 +5,10 @@ import {
   calculateExpression
 } from './rpn.js';
 import i18next from 'i18next';
+import locI18next from 'loc-i18next';
 import * as resources from '../i18next';
 
-var $expression, $table, $graph, $isTautology, $isNotTautology, $btnEn, $btnPl
+var $expression, $table, $graph, $isTautology, $isNotTautology, $btnEn, $btnPl, loci18next
 const MAX_VARS_TO_RENDER_TABLE = 10;
 
 function renderGraph(rpn) {
@@ -77,7 +78,7 @@ function onCalculatePress() {
       tableHtml += `<th>${varList[i]}</th>`;
     }
 
-    tableHtml += '<th>Wynik</th></tr>';
+    tableHtml += '<th data-i18next="result">Wynik</th></tr>';
     $table.innerHTML = tableHtml;
   } else {
     $table.innerHTML = '';
@@ -158,27 +159,24 @@ window.onload = function() {
   // Setup internationalization support
   i18next.init({
     lng: 'en',
-    debug: true,
-    resources,
-    }, (err, t) => {
-      if (err) return ('Error while loading', err);
-      updateContent();
-    });
+    resources
+  });
 
-  function updateContent() {
-    document.getElementById('toolbar-title').innerHTML = i18next.t('title');
-  }
-
-  i18next.on('languageChanged', () => {
-    updateContent();
+  loci18next = locI18next.init(i18next, {
+    selectorAttr: 'data-i18next', // selector for translating elements
   });
 
   // Change language
   $btnEn.addEventListener('click', function() {
     i18next.changeLanguage('en')
   });
+
   $btnPl.addEventListener('click', function() {
     i18next.changeLanguage('pl')
+  });
+
+  i18next.on('languageChanged', () => {
+    loci18next('html');
   });
 
   // Set last valid expression
