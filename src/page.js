@@ -166,13 +166,17 @@ window.onload = function() {
     selectorAttr: 'data-i18next', // selector for translating elements
   });
 
+  loci18next('html');
+
   // Change language
   $btnEn.addEventListener('click', function() {
-    i18next.changeLanguage('en')
+    i18next.changeLanguage('en');
+    document.documentElement.lang = 'en';
   });
 
   $btnPl.addEventListener('click', function() {
-    i18next.changeLanguage('pl')
+    i18next.changeLanguage('pl');
+    document.documentElement.lang = 'pl';
   });
 
   i18next.on('languageChanged', () => {
