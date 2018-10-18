@@ -7,7 +7,7 @@ const watchify = require('watchify');
 const uglify = require('gulp-uglify');
 
 gulp.task('default', ['build-html', 'build-css', 'build-prod'], () => gulp);
-gulp.task('watch', ['build-html', 'build-css'], () => watch(),);
+gulp.task('watch', ['build-html', 'build-css', 'build-dev'], () => gulp);
 
 gulp.task('build-html', () => gulp
 .src('src/**/*.html')
@@ -32,14 +32,14 @@ gulp.task('build-prod', () => {
     .pipe(gulp.dest('build'));
 })
 
-function compile(watch) {
+gulp.task('build-dev', () => {
   let bundler = watchify(browserify({
     entries: [__dirname + '/src/page.js'],
     basedir: __dirname,
     globals: false,
     debug: true // enables source maps
   }).transform("babelify", { presets: ["@babel/preset-env"] }));
-  
+
   function rebundle() {
     bundler
     .require(__dirname + '/src/page.js')
@@ -48,19 +48,11 @@ function compile(watch) {
     .pipe(buffer())
     .pipe(sourcemaps.init({loadMaps: true}))
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('build'));
+    .pipe(gulp.dest('build'))
   }
-  
-  if (watch) {
-    bundler.on('update', () => {
-      console.log('Bundling...');
-      rebundle();
-    });
-  }
-  
+  bundler.on('update', () => {
+    console.log('Bundling...');
+    rebundle();
+  })
   rebundle();
-}
-
-function watch() {
-  return compile(true);
-}
+})
