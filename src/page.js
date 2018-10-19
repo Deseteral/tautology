@@ -78,9 +78,9 @@ function onCalculatePress() {
       tableHtml += `<th>${varList[i]}</th>`;
     }
 
-    tableHtml += '<th data-i18next="result">Result</th></tr>';
+    tableHtml += '<th data-i18next="result"></th></tr>';
     $table.innerHTML = tableHtml;
-    // Handle translations for dynamic content
+    // Handle translation for dynamic content
     loci18next('html');
   } else {
     $table.innerHTML = '';
