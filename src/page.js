@@ -1,17 +1,15 @@
+import {
+  convertToRpn,
+  getVariableInfo,
+  createGraph,
+  calculateExpression
+} from './rpn.js';
+import i18next from 'i18next';
+import locI18next from 'loc-i18next';
+import * as resources from '../i18next';
+
+var $expression, $table, $graph, $isTautology, $isNotTautology, $btnEn, $btnPl, loci18next
 const MAX_VARS_TO_RENDER_TABLE = 10;
-
-// This function is called when DOM is loaded
-const $expression = document.getElementById('expression');
-const $table = document.getElementById('outcome-table');
-const $graph = document.getElementById('graph-renderer');
-const $isTautology = document.querySelector('.is-tautology .is');
-const $isNotTautology = document.querySelector('.is-tautology .is-not');
-
-// Set last valid expression
-$expression.focus();
-if (localStorage.lastExpression !== undefined) {
-  $expression.value = localStorage.lastExpression;
-}
 
 function renderGraph(rpn) {
   const data = createGraph(rpn);
@@ -43,7 +41,7 @@ function onCalculatePress() {
   localStorage.lastExpression = $expression.value;
 
   if (val === '') {
-    window.alert('Formuła nie może być pusta!');
+    window.alert(i18next.t('alert'));
     return;
   }
 
@@ -80,8 +78,10 @@ function onCalculatePress() {
       tableHtml += `<th>${varList[i]}</th>`;
     }
 
-    tableHtml += '<th>Wynik</th></tr>';
+    tableHtml += '<th data-i18next="result"></th></tr>';
     $table.innerHTML = tableHtml;
+    // Handle translation for dynamic content
+    loci18next('html');
   } else {
     $table.innerHTML = '';
   }
@@ -148,4 +148,47 @@ function onKeyPress(event) {
   return false;
 }
 
-$expression.addEventListener('keydown', onKeyPress);
+// This function is called when DOM is loaded
+window.onload = function() {
+  $btnEn = document.getElementById('btn-en');
+  $btnPl = document.getElementById('btn-pl');
+  $expression = document.getElementById('expression');
+  $table = document.getElementById('outcome-table');
+  $graph = document.getElementById('graph-renderer');
+  $isTautology = document.querySelector('.is-tautology .is');
+  $isNotTautology = document.querySelector('.is-tautology .is-not');
+
+  // Setup internationalization support
+  i18next.init({
+    lng: 'en',
+    resources
+  });
+
+  loci18next = locI18next.init(i18next, {
+    selectorAttr: 'data-i18next', // selector for translating elements
+  });
+
+  loci18next('html');
+
+  // Change language
+  $btnEn.addEventListener('click', function() {
+    i18next.changeLanguage('en');
+    document.documentElement.lang = 'en';
+  });
+
+  $btnPl.addEventListener('click', function() {
+    i18next.changeLanguage('pl');
+    document.documentElement.lang = 'pl';
+  });
+
+  i18next.on('languageChanged', () => {
+    loci18next('html');
+  });
+
+  // Set last valid expression
+  $expression.focus();
+  if (localStorage.lastExpression !== undefined) {
+    $expression.value = localStorage.lastExpression;
+  }
+  $expression.addEventListener('keydown', onKeyPress);
+}

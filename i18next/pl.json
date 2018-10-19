@@ -1,0 +1,26 @@
+{
+  "translation": {
+    "title": "Tautologia",
+    "toolbarTitle": "Rachunek zdań",
+    "headline": "Aplikacja sprawdza, czy podana formuła jest tautologią",
+    "placeholder": "Formuła np. 'p&q'",
+    "guide": {
+      "conj": "koniunkcja",
+      "disj": "alternatywa",
+      "imp": "implikacja",
+      "imp-left": "implikacja w drugą stronę",
+      "equ": "równoważność",
+      "neg": "negacja"
+    },
+    "notice1": "Uwaga: Aby uniknąć błędów w interpretacji formuły, korzystając z negacji należy umieszczać ją w nawiasach np. (!p), lub (!(p>q)).",
+    "or": "lub",
+    "notice2": "Uwaga: Aplikacja nie sprawdza poprawności formuły.",
+    "isTautology": "Zdanie jest tautologią",
+    "isNotTautology": "Zdanie nie jest tautologią",
+    "graph": "Drzewo reprezentujące formułę:",
+    "table": "Tabela wartościowań",
+    "table-info": "Wiersze z zielonym tłem oznaczają wartościowanie dla których formuła jest prawdziwa.",
+    "result": "Wynik",
+    "alert": "Formuła nie może być pusta!"
+  }
+}

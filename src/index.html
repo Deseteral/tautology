@@ -1,7 +1,7 @@
 ﻿<!doctype html>
-<html>
+<html lang="en">
 <head>
-  <title>Tautologia</title>
+  <title data-i18next="title"></title>
 
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,46 +12,47 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.10.0/vis.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.10.0/vis.min.css" charset="utf-8">
 
-  <script src="page.js" defer></script>
-  <script src="rpn.js" defer></script>
+  <script src="bundle.js"></script>
 
   <link rel="stylesheet" href="styles.css" charset="utf-8">
 </head>
 <body>
   <div class="toolbar">
-    <div>Rachunek zdań</div>
+    <div data-i18next="toolbarTitle"></div>
+    <div class="lang-buttons">
+      <button id="btn-pl">PL</button>
+      <button id="btn-en">EN</button>
+    </div>
   </div>
 
   <div class="container">
-    <div class="headline typo-headline">
-      Aplikacja sprawdza, czy podana formuła jest tautologią
+    <div class="headline typo-headline" data-i18next="headline">
     </div>
 
     <input
+      data-i18next="[placeholder]placeholder"
       id="expression"
       class="typo-code"
       type="text"
       name="expression"
-      placeholder="Formuła np. 'p&amp;q'">
+      placeholder="">
 
     <div class="user-guide">
       <div class="typo-code">
-        <div>&amp; - koniunkcja</div>
-        <div>| - alternatywa</div>
-        <div>&gt; - implikacja</div>
-        <div>&lt; - implikacja w drugą stronę</div>
-        <div>= - równoważność</div>
-        <div>! - negacja</div>
+        <div>&amp; - <span data-i18next="guide.conj"></span></div>
+        <div>| - <span data-i18next="guide.disj"></span></div>
+        <div>&gt; - <span data-i18next="guide.imp"></span></div>
+        <div>&lt; - <span data-i18next="guide.imp-left"></span></div>
+        <div>= - <span data-i18next="guide.equ"></span></div>
+        <div>! - <span data-i18next="guide.neg"></span></div>
       </div>
       <div class="notice">
-        <div>
-          Uwaga: Aby uniknąć błędów w interpretacji formuły, korzystając z
-          negacji należy umieszczać ją w nawiasach np.
-          <span class="typo-code">(!p)</span>, lub
+        <div data-i18next="notice1">
+          <span class="typo-code">(!p)</span>,
+          <span data-i18next="or"></span>
           <span class="typo-code">(!(p&gt;q))</span>.
         </div>
-        <div>
-          Uwaga: Aplikacja nie sprawdza poprawności formuły.
+        <div data-i18next="notice2">
         </div>
       </div>
     </div>
@@ -59,24 +60,22 @@
     <div class="is-tautology typo-headline">
       <div class="is">
         <i class="material-icons">&#xE8DC;</i>
-        <span>Zdanie jest tautologią</span>
+        <span data-i18next="isTautology"></span>
       </div>
       <div class="is-not">
         <i class="material-icons">&#xE8DB;</i>
-        <span>Zdanie nie jest tautologią</span>
+        <span data-i18next="isNotTautology"></span>
       </div>
     </div>
 
     <div class="graph">
-      <div class="typo-headline">Drzewo reprezentujące formułę:</div>
+      <div class="typo-headline" data-i18next="graph"></div>
       <div id="graph-renderer" class="renderer"></div>
     </div>
 
     <div class="table">
-      <div class="typo-headline">Tabela wartościowań</div>
-      <div>
-        Wiersze z zielonym tłem oznaczają wartościowanie dla których formuła
-        jest prawdziwa.
+      <div class="typo-headline" data-i18next="table"></div>
+      <div data-i18next="table-info">
       </div>
       <table
         id="outcome-table"

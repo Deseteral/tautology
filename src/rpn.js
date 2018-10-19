@@ -1,7 +1,7 @@
 
 // Converts infix notation to RPN
 // Returns array of RPN tokens
-function convertToRpn(data) { // eslint-disable-line no-unused-vars
+export function convertToRpn(data) { // eslint-disable-line no-unused-vars
   const queue = [];
   const stack = [];
 
@@ -50,7 +50,7 @@ function convertToRpn(data) { // eslint-disable-line no-unused-vars
 
 // Calculates the value of the expression expressed as RPN
 // Returns 0 or 1, the result of calculations
-function calculateExpression(rpn, vars) { // eslint-disable-line no-unused-vars
+export function calculateExpression(rpn, vars) { // eslint-disable-line no-unused-vars
   const stack = [];
   let symbol;
 
@@ -106,7 +106,7 @@ function calculateExpression(rpn, vars) { // eslint-disable-line no-unused-vars
 }
 
 // Returns the array of variable tokens in RPN expression
-function getVariableInfo(rpn) { // eslint-disable-line no-unused-vars
+export function getVariableInfo(rpn) { // eslint-disable-line no-unused-vars
   const vars = [];
 
   for (let i = 0; i < rpn.length; i += 1) {
@@ -122,7 +122,7 @@ function getVariableInfo(rpn) { // eslint-disable-line no-unused-vars
   return vars;
 }
 
-function createGraph(rpn) { // eslint-disable-line no-unused-vars
+export function createGraph(rpn) { // eslint-disable-line no-unused-vars
   // Create nodes
   const nodes = [];
 
