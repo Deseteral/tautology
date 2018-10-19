@@ -20,6 +20,7 @@
     "graph": "Drzewo reprezentujące formułę:",
     "table": "Tabela wartościowań",
     "table-info": "Wiersze z zielonym tłem oznaczają wartościowanie dla których formuła jest prawdziwa.",
-    "result": "Wynik"
+    "result": "Wynik",
+    "alert": "Formuła nie może być pusta!"
   }
 }

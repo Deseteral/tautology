@@ -1,5 +1,5 @@
 {
-  "translation": { 
+  "translation": {
     "title": "Tautology",
     "toolbarTitle": "Propositional calculus",
     "headline": "Application determines whether the given formula is a tautology",
@@ -20,6 +20,7 @@
     "graph": "Graph representing the formula:",
     "table": "Evaluation table",
     "table-info": "Green rows indicate valuations for which the formula is true.",
-    "result": "Result"
+    "result": "Result",
+    "alert": "Formula cannot be empty!"
   }
 }

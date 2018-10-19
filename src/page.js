@@ -41,7 +41,7 @@ function onCalculatePress() {
   localStorage.lastExpression = $expression.value;
 
   if (val === '') {
-    window.alert('Formuła nie może być pusta!');
+    window.alert(i18next.t('alert'));
     return;
   }
 
